@@ -152,3 +152,66 @@ body {
     background-color: #292929e8;
   }
   
+
+  .book-table-container {
+    padding: 20px;
+  }
+  
+  .filter-buttons button {
+    margin-right: 10px;
+    padding: 10px;
+    background-color: #483C83;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .book-table {
+    margin-top: 20px;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .book-table-header,
+  .book-table-row {
+    display: flex;
+    background-color: #f9f9f9;
+  }
+  
+  .book-table-column {
+    font-size: 14px;
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  .book-table-row:hover {
+    background-color: #f1f1f1;
+  }
+
+  .search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    color:rgba(0, 0, 0, 0.822);
+  }
+  
+  .search-bar input {
+    width: 100%;
+    max-width: 600px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    color:rgba(0, 0, 0, 0.822);
+    border-radius: 4px;
+  }
+
+
+  .search-options{
+    justify-content: center;
+    padding-left: 3px;
+    background-color: #f9f9f9;
+    color:rgba(0, 0, 0, 0.822);
+    border-color: #ddd;
+  }
