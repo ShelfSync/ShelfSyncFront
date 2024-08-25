@@ -47,3 +47,27 @@
   .add-book-form label{
     text-align: left;
   }
+
+  .suggestions {
+    top: 100%; 
+    left: 0;
+    width: 100%;
+    background: #fff;
+    max-height: 150px;
+    overflow-y: auto;
+    list-style-type: none;
+    margin: 0;
+    text-align: left;
+    padding: 0;
+  }
+  
+  .suggestions li {
+    padding: 8px;
+    cursor: pointer;
+  }
+  
+  .suggestions li:hover {
+    background-color: #f0f0f0;
+  }
+  
+  
