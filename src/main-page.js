@@ -3,6 +3,7 @@ import axios from 'axios';
 import './material-dashboard.css';
 import BookList from './BookList';
 import BookListView from './BookListView';
+import AddBook from './AddBook';
 
 
 
@@ -11,6 +12,8 @@ const MainPage = () =>{
     const [isActive, setIsActive] = useState(false);
     const [listActive, setListActive] = useState(false);
     const [User, setUser] = useState(null);
+    const [addBookView, setAddBookView] = useState(false);
+    const [addBookActive , setAddBookActive] = useState(false);
     const [showBookView, setShowBookView] = useState(false);
     const [showListView, setListView] = useState(false);
 
@@ -156,22 +159,29 @@ const MainPage = () =>{
 
     const handleLibraryClick = () => {
       setIsActive(!isActive);  // Aktif durumu tersine çevirir
-      if(!isActive){
+      if(isActive){
         setListActive(false);
+        setAddBookActive(false);
         setShowBookView(true);
-      } else if (isActive){ setShowBookView(false); }
+      } else if (!isActive){ setShowBookView(false); }
       
     };
 
     
 
     const handleListViewClick = () => {
-      setShowBookView(false);
+      
       setListActive(!listActive);  // Aktif durumu tersine çevirir
-      if(!listActive){setListView(true);}
-      else if (listActive){setListView(false);}
+      if(listActive){setListView(true);setAddBookActive(false);setShowBookView(false);}
+      else if (!listActive){setListView(false);}
       
     };
+
+    const handleAddBookClick = () => {
+      setAddBookActive(!addBookActive);
+      if(addBookActive){setAddBookView(true);setListView(false);setShowBookView(false);}
+      else if(!addBookActive){setAddBookView(false);}
+    }
 
     useEffect(() => {
             const fetchBooks = async () => {
@@ -226,7 +236,7 @@ const MainPage = () =>{
                 </a>
               </li>
               <li>
-                <a class="nav-link" href="javascript:void(2)">
+                <a class="nav-link" href="javascript:void(2)" onClick = {handleAddBookClick}>
                   <i class="material-icons">add</i>
                   <p>Add New</p>
                 </a>
@@ -292,6 +302,7 @@ const MainPage = () =>{
                 </div> */}
                 {showBookView ? <BookList books = {books} /> : ''}
                 {showListView ? <BookListView books = {books} /> : ''}
+                {addBookView ? <AddBook /> : ''}
             </div>
           </div>
           </div>
