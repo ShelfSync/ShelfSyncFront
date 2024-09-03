@@ -4,6 +4,8 @@ import './material-dashboard.css';
 import BookList from './BookList';
 import BookListView from './BookListView';
 import AddBook from './AddBook';
+import defaultProfilePic from './covers/nidarda.JPG'; 
+
 
 
 
@@ -17,7 +19,6 @@ const MainPage = () =>{
     const [showListView, setListView] = useState(false);
 
     useEffect(() => {
-      // JSON dosyasını fetch et
       axios.get('./Books.json')
           .then(response => {
               setBooks(response.data);
@@ -30,7 +31,7 @@ const MainPage = () =>{
 
 
     const handleLibraryClick = () => {
-      setIsActive(!isActive);  // Aktif durumu tersine çevirir
+      setIsActive(!isActive);  
       if(isActive){
         setListActive(false);
         setAddBookActive(false);
@@ -39,12 +40,16 @@ const MainPage = () =>{
       
     };
 
+    const handleProfileClick = () => {
+      window.location.href = '/profile';
+    }
+
     
 
     const handleListViewClick = () => {
       
-      setListActive(!listActive);  // Aktif durumu tersine çevirir
-      if(listActive){setListView(true);setAddBookActive(false);setShowBookView(false);}
+      setListActive(!listActive);  
+      if(listActive){setListView(true);setShowBookView(false);setAddBookView(false);}
       else if (!listActive){setListView(false);}
       
     };
@@ -63,11 +68,14 @@ const MainPage = () =>{
             <a class="simple-text logo-normal">
               ShelfSync
             </a>
+                  <a className="nav-link" href="javascript:void(0)" onClick={handleProfileClick}>
+            <img style={{width: '80px', height: '80px' , marginLeft: '32%'}} src={defaultProfilePic} alt="Profile" className="profile-pic" />
+        </a>
           </div>
           <div class="sidebar-wrapper">
             <ul class="nav">
               <li className={`nav-link.active ${isActive ? 'nav-link.active' : ''}`}>
-                <a class="nav-link"  href = '#' onClick={handleLibraryClick}>
+                <a class="nav-link"  href = 'javascript:void(2)' onClick={handleLibraryClick}>
                   <i class="material-icons">library_books</i>
                   <p>Library</p>
                 </a>       
@@ -86,11 +94,17 @@ const MainPage = () =>{
               </li>
               <li>
                 <a class="nav-link" href="javascript:void(3)">
-                  <i class="material-icons">person</i>
-                  <p>Settings</p>
+                  <i class="material-icons">analytics</i>
+                  <p>Statistics</p>
                 </a>
               </li>
-              <li style={{listStyle: 'none', marginTop: '110%'}}>
+              <li>
+                <a class="nav-link" href="javascript:void(3)">
+                  <i class="material-icons">coffee</i>
+                  <p>Buy us a coffee</p>
+                </a>
+              </li>
+              <li style={{listStyle: 'none', marginTop: '80%'}}>
                 <a class="nav-link" href="javascript:void(3)">
                   <i class="material-icons">logout</i>
                   <p>Logout</p>
@@ -105,44 +119,20 @@ const MainPage = () =>{
         <div class="main-panel">
           <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
             <div class="container-fluid">
-              <div class="navbar-wrapper">
-                <a class="navbar-brand" href="javascript:void(0)">Buy us a coffee</a>
-                <i class="material-icons">coffee</i>
-    
-              </div>
+              
               <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="sr-only">Toggle navigation</span>
-                <span class="navbar-toggler-icon icon-bar"></span>
-                <span class="navbar-toggler-icon icon-bar"></span>
-                <span class="navbar-toggler-icon icon-bar"></span>
               </button>
               <div class="collapse navbar-collapse justify-content-end">
                 <ul class="navbar-nav">
-                  <li class="nav-item">
-                    <a class="nav-link" href="javascript:void(0)">
-                      <p >asd</p>
-                      <i class="material-icons">person</i>
-                      <p class="d-lg-none d-md-block">
-                        
-                      </p>
-                    </a>
-                  </li>
+               
                 </ul>
               </div>
             </div>
           </nav>
           <div class="content">
             <div class="container-fluid">
-                {/* <div class="book-card">
-                    <a href = "">
-                        <div class="book-card-image">
-                            <img src="https://via.placeholder.com/150" alt="Book Cover"/>
-                        </div>
-                        <div class="book-card-header">
-                            <h2>Book Title</h2>
-                        </div>
-                    </a>
-                </div> */}
+             
                 {showBookView ? <BookList books = {books} /> : ''}
                 {showListView ? <BookListView books = {books} /> : ''}
                 {addBookView ? <AddBook /> : ''}
