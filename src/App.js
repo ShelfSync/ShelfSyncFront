@@ -10,7 +10,6 @@ function App() {
       <Routes>
         <Route path="/" element={<RegisterPage />} />
         <Route path="/main" element={<MainPage />} />
-        {/* Diğer rotalar buraya eklenebilir */}
         <Route path="*" element={<h1>Not Found</h1>} />
         <Route path="/profile" element={<ProfilePage />} /> 
       </Routes>
