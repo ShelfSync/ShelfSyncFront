@@ -5,148 +5,119 @@ import Layout from './Layout';
 
 const BookListView = () => {
   const [books, setBooks] = useState([]);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchCategory, setSearchCategory] = useState('title');
+  
+  const defaultVisibleColumns = {
+    title: true, author: true, altAuthor: true, publisher: true,
+    year: true, pageCount: true, readedDate: true, addedDate: true,
+    version: true, categories: true, description: true
+  };
+  
+  const getStoredColumns = () => JSON.parse(localStorage.getItem('visibleColumns')) || defaultVisibleColumns;
+  const [visibleColumns, setVisibleColumns] = useState(getStoredColumns);
+  const [activeColumns, setActiveColumns] = useState(getStoredColumns);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     axios.get('http://localhost:5193/api/Books', {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
+      headers: { Authorization: `Bearer ${token}` }
     })
-      .then(response => {
-        setBooks(response.data.data);
-      })
-      .catch(error => {
-        console.error("There was an error fetching the books!", error);
-      });
+      .then(response => setBooks(response.data.data))
+      .catch(error => console.error("Error fetching books", error));
   }, []);
 
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [visibleColumns, setVisibleColumns] = useState({
-    title: true,
-    author: true,
-    altAuthor: true,
-    publisher: true,
-    year: true,
-    page: true,
-    readDate: true,
-    addedDate: true,
-    version: true,
-    categories: true,
-    description: true
-  });
-
-  const [searchTerm, setSearchTerm] = useState('');
-  const [searchCategory, setSearchCategory] = useState('title');
-
-  const handleBookClick = (book) => {
-    setSelectedBook(book);
-  };
-
-  const closeDetails = () => {
-    setSelectedBook(null);
-  };
+  const handleBookClick = (book) => setSelectedBook(book);
+  const closeDetails = () => setSelectedBook(null);
 
   const toggleColumn = (column) => {
-    setVisibleColumns(prevState => ({
-      ...prevState,
-      [column]: !prevState[column]
-    }));
+    setVisibleColumns((prev) => {
+      const updatedColumns = { ...prev, [column]: !prev[column] };
+      localStorage.setItem('visibleColumns', JSON.stringify(updatedColumns));
+      return updatedColumns;
+    });
+    setActiveColumns((prev) => ({ ...prev, [column]: !prev[column] }));
   };
 
-  const handleSearch = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  const handleCategoryChange = (event) => {
-    setSearchCategory(event.target.value);
-  };
+  const handleSearch = (event) => setSearchTerm(event.target.value);
+  const handleCategoryChange = (event) => setSearchCategory(event.target.value);
 
   const filteredBooks = books.filter((book) => {
     const term = searchTerm.toLowerCase();
-    if (searchCategory === 'title') {
-      return book.title.toLowerCase().includes(term);
-    
-    } else if (searchCategory === 'publisher') {
-      return book.publisher.toLowerCase().includes(term);
-    } else if (searchCategory === 'author') {
-        return book.author.toLowerCase().includes(term);
-    }
-    return true;
+    return book[searchCategory]?.toLowerCase().includes(term);
   });
+
+  const columns = [
+    'title', 'author', 'altAuthor', 'publisher', 'year', 
+    'pageCount', 'readedDate', 'addedDate', 'version', 
+    'categories', 'description'
+  ];
 
   return (
     <Layout>
-    <div className="book-table-container">
-      <div className="search-bar">
-        <input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={handleSearch}
-        />
-        <select className='search-options' value={searchCategory} onChange={handleCategoryChange}>
-          <option value="title">Title</option>
+      <div className="book-table-container">
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+          />
+          <select value={searchCategory} onChange={handleCategoryChange}>
+            <option value="title">Title</option>
             <option value="publisher">Publisher</option>
             <option value="author">Author</option>
-        </select>
-      </div>
-
-      <div className="filter-buttons">
-        <button onClick={() => toggleColumn('title')}>Title</button>
-        <button onClick={() => toggleColumn('author')}>Author</button>
-        <button onClick={() => toggleColumn('altAuthor')}>Alt Author</button>
-        <button onClick={() => toggleColumn('publisher')}>Publisher</button>
-        <button onClick={() => toggleColumn('year')}>Year</button>
-        <button onClick={() => toggleColumn('page')}>Page Count</button>
-        <button onClick={() => toggleColumn('readDate')}>Read Date</button>
-        <button onClick={() => toggleColumn('addedDate')}>Added Date</button>
-        <button onClick={() => toggleColumn('version')}>Version</button>
-        <button onClick={() => toggleColumn('categories')}>Categories</button>
-        <button onClick={() => toggleColumn('description')}>Description</button>
-      </div>
-
-      <div className="book-table">
-        <div className="book-table-header" style={{ fontWeight: 'bold' }}>
-          {visibleColumns.title && <div className="book-table-column">Title</div>}
-          {visibleColumns.author && <div className="book-table-column">Author</div>}
-          {visibleColumns.altAuthor && <div className="book-table-column">Alt Author</div>}
-          {visibleColumns.publisher && <div className="book-table-column">Publisher</div>}
-          {visibleColumns.year && <div className="book-table-column">Year</div>}
-          {visibleColumns.page && <div className="book-table-column">Page Count</div>}
-          {visibleColumns.readDate && <div className="book-table-column">Read Date</div>}
-          {visibleColumns.addedDate && <div className="book-table-column">Added Date</div>}
-          {visibleColumns.version && <div className="book-table-column">Version</div>}
-          {visibleColumns.categories && <div className="book-table-column">Categories</div>}
-          {visibleColumns.description && <div className="book-table-column">Description</div>}
+          </select>
         </div>
 
-        {filteredBooks.map((book) => (
-          <div key={book.id} className="book-table-row" onClick={() => handleBookClick(book)}>
-            {visibleColumns.title && <div className="book-table-column">{book.title}</div>}
-            {visibleColumns.author && <div className="book-table-column">{book.author}</div>}
-            {visibleColumns.altAuthor && <div className="book-table-column">{book.altAuthor}</div>}
-            {visibleColumns.publisher && <div className="book-table-column">{book.publisher}</div>}
-            {visibleColumns.year && <div className="book-table-column">{book.year}</div>}
-            {visibleColumns.page && <div className="book-table-column">{book.page}</div>}
-            {visibleColumns.readDate && <div className="book-table-column">{book.readedDate}</div>}
-            {visibleColumns.addedDate && <div className="book-table-column">{book.addedData}</div>}
-            {visibleColumns.version && <div className="book-table-column">{book.version}</div>}
-            {visibleColumns.categories && (
-              <div className="book-table-column categories-column">
-                {book.genres.map((genre) => (
-              <div key={genre.id} className="category">
-                {genre.name}
-              </div>
+        <div className="filter-buttons">
+          {columns.map(column => (
+            <button
+              key={column}
+              onClick={() => toggleColumn(column)}
+              style={{
+                backgroundColor: activeColumns[column] ? 'lightGreen' : 'initial',
+                color: activeColumns[column] ? 'white' : 'black'
+              }}
+            >
+              {column.charAt(0).toUpperCase() + column.slice(1)}
+            </button>
+          ))}
+        </div>
+
+        <div className="book-table">
+          <div className="book-table-header" style={{ fontWeight: 'bold' }}>
+            {columns.map(column => (
+              visibleColumns[column] && <div key={column} className="book-table-column">{column.charAt(0).toUpperCase() + column.slice(1)}</div>
             ))}
-              </div>
-            )}
-            {visibleColumns.description && <div className="book-table-column">{book.description}</div>}
           </div>
-        ))}
+
+          {filteredBooks.map((book) => (
+            <div key={book.id} className="book-table-row" onClick={() => handleBookClick(book)}>
+              {visibleColumns.title && <div className="book-table-column">{book.title}</div>}
+              {visibleColumns.author && <div className="book-table-column">{book.author}</div>}
+              {visibleColumns.altAuthor && <div className="book-table-column">{book.altAuthor}</div>}
+              {visibleColumns.publisher && <div className="book-table-column">{book.publisher}</div>}
+              {visibleColumns.year && <div className="book-table-column">{book.year}</div>}
+              {visibleColumns.pageCount && <div className="book-table-column">{book.pageCount}</div>}
+              {visibleColumns.readedDate && <div className="book-table-column">{book.readedDate}</div>}
+              {visibleColumns.addedDate && <div className="book-table-column">{book.addedDate}</div>}
+              {visibleColumns.version && <div className="book-table-column">{book.version}</div>}
+              {visibleColumns.categories && (
+                <div className="book-table-column categories-column">
+                  {book.genres.map((genre) => (
+                    <div key={genre.id} className="category">{genre.name}</div>
+                  ))}
+                </div>
+              )}
+              {visibleColumns.description && <div className="book-table-column">{book.description}</div>}
+            </div>
+          ))}
+        </div>
+        
+        {selectedBook && <BookDetails book={selectedBook} closeDetails={closeDetails} />}
       </div>
-      {selectedBook && <BookDetails book={selectedBook} closeDetails={closeDetails} />}
-    </div>
     </Layout>
   );
 };

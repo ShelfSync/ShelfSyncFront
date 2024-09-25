@@ -8,6 +8,7 @@ const RegisterPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate(); 
 
     const headers = {
@@ -21,20 +22,25 @@ const RegisterPage = () => {
             setErrorMessage('Please fill out all fields.');
             return;
         }
-        
+
+        setIsLoading(true); 
+
         axios.post('http://localhost:5193/api/Auth/login', { username, password }, {
             headers: headers,
         })
-        .then(response => {            
+        .then(response => {
             const token = response.data.data.accessToken; 
             localStorage.setItem('token', token); 
-            alert('Login successful!');
-            navigate('/library'); 
+            navigate('/library');
         })
         .catch(error => {
             setErrorMessage('Login failed. Please try again.');
+        })
+        .finally(() => {
+            setIsLoading(false); 
         });
     };
+
 
     const handleRegisterSubmit = (event) => {
         event.preventDefault();
@@ -49,14 +55,18 @@ const RegisterPage = () => {
             return;
         }
 
+        setIsLoading(true); 
+
         axios.post('http://localhost:5193/api/Auth/register', { username, password }, {
             headers: headers,
         })
         .then(response => {
-            alert('Registration successful!');
         })
         .catch(error => {
             setErrorMessage('Registration failed. Please try again.');
+        })
+        .finally(() => {
+            setIsLoading(false);
         });
     };
 
@@ -68,6 +78,8 @@ const RegisterPage = () => {
                 
             </div>
             <div className="register-form">
+            {isLoading && <div className="loading-spinner"></div>}
+                
                 <form>
                     <input
                         type="text"

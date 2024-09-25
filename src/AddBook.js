@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './styles/AddBook.css';
 import Layout from './Layout';
+import { BarcodeScanner } from 'react-barcode-scanner'
+import "react-barcode-scanner/polyfill"
 
 const AddBook = () => {
   const [bookData, setBookData] = useState({
     title: '',
-    readDate: '',
+    readedDate: '',
     cover: '',
     description: '',
     author: '',
@@ -16,7 +18,7 @@ const AddBook = () => {
     version: '',
     year: '',
     page: '',
-    categories: '',
+    genres: '',
     readingStatus: '0' //default value is not readed
   });
   
@@ -24,7 +26,9 @@ const AddBook = () => {
   const [authorSuggestions, setAuthorSuggestions] = useState([]);
   const [altAuthorSuggestions, setAltAuthorSuggestions] = useState([]);
   const [publisherSuggestions, setPublisherSuggestions] = useState([]);
-  
+  const [genresSuggestions, setGenresSuggestions] = useState([]);
+  const [scannerActive, setScannerActive] = useState(false);
+
   // Used to obtain userId from token
   function parseJWT(token) {
     const base64Url = token.split('.')[1];
@@ -36,6 +40,17 @@ const AddBook = () => {
     return JSON.parse(jsonPayload);
   }
 
+  const handleBarcodeDetected = (barcode) => {
+    setBookData((prevState) => ({
+      ...prevState,
+      isbn: barcode 
+    }));
+    setScannerActive(false); 
+  };
+
+  const handleToggleScanner = () => {
+    setScannerActive((prevState) => !prevState);
+  };
   
 
   const handleChange = async (e) => {
@@ -118,6 +133,24 @@ const AddBook = () => {
       }
     }
 
+    else  if (name === 'genre' && value.length > 0) {
+      try {
+        if (value.length < 3) {
+          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
+            params: { Word: value, PropertyName: 'genre' }
+          });
+          setGenresSuggestions(response.data.data.suggestions); 
+        } else {
+          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
+            params: { Word: value, PropertyName: 'genre' }
+          });
+          setGenresSuggestions(response.data.data.suggestions); 
+        }
+      } catch (error) {
+        console.error("Error fetching genre suggestions:", error);
+      }
+    }
+
     
   
   
@@ -135,7 +168,10 @@ const AddBook = () => {
       setAuthorSuggestions([]);
     } else if (fieldName === 'publisher') {
       setPublisherSuggestions([]);
+    }  else if (fieldName === 'genre') {
+      setGenresSuggestions([]);
     }
+   
   };
 
   const handleSubmit = async (e) => {
@@ -145,7 +181,7 @@ const AddBook = () => {
 
     try {
       // Convert genres into array
-      const genresArray = bookData.categories.split(',').map(genre => genre.trim()).filter(genre => genre !== '');
+      const genresArray = bookData.genres.split(',').map(genre => genre.trim()).filter(genre => genre !== '');
       const response = await axios.post('http://localhost:5193/api/Books', {
         userId: userId,
         title: bookData.title,
@@ -160,16 +196,15 @@ const AddBook = () => {
         description: bookData.description,
         coverType: bookData.cover,
         genres: genresArray,
-        readedDate: bookData.readDate,
+        readedDate: bookData.readedDate,
                     
       });
 
-      console.log('Kitap başarıyla eklendi:', response.data);
 
       //clear input fields after submit
       setBookData({
         title: '',
-        readDate: '',
+        readedDate: '',
         cover: '',
         description: '',
         author: '',
@@ -179,9 +214,10 @@ const AddBook = () => {
         version: '',
         year: '',
         page: '',
-        categories: '',
+        genres: '',
         readingStatus: '0'
       });
+      alert('Book added successfuly!');
     } catch (error) {
       console.error('Kitap eklenirken bir hata oluştu:', error);
     }
@@ -189,6 +225,8 @@ const AddBook = () => {
 
   const [selectedCover, setSelectedCover] = useState('');
   const [uploadedCover, setUploadedCover] = useState(null);
+
+  
 
   const coverImages = [
     { id: '1', src: 'https://marketplace.canva.com/EAFaQMYuZbo/1/0/1003w/canva-brown-rusty-mystery-novel-book-cover-hG1QhA7BiBU.jpg', alt: 'Kapak 1' },
@@ -213,6 +251,16 @@ const AddBook = () => {
       ...prevState,
       cover: file.name,
     }));
+  };
+
+
+  const handleBarcodeScan = (result) => {
+    if (result) {
+      setBookData(prevState => ({
+        ...prevState,
+        isbn: result 
+      }));
+    }
   };
 
   return (
@@ -246,9 +294,9 @@ const AddBook = () => {
         <label>Read Date</label>
         <input
           type="date"
-          name="readDate"
+          name="readedDate"
           placeholder="Read Date"
-          value={bookData.readDate}
+          value={bookData.readedDate}
           onChange={handleChange}
         />
         
@@ -306,6 +354,21 @@ const AddBook = () => {
           value={bookData.isbn}
           onChange={handleChange}
         />
+        <button type="button" style={{width: '30%'}} onClick={handleToggleScanner}>
+            {scannerActive ? 'Taramayı Durdur' : 'Barkod Tarayıcıyı Aç'}
+          </button>
+
+          {scannerActive && (
+            <BarcodeScanner
+              onUpdate={(err, result) => {
+                if (result) {
+                  handleBarcodeDetected(result.text); 
+                } else if (err) {
+                  console.error(err);
+                }
+              }}
+            />
+          )}
         
 
         <label>Publisher</label>
@@ -369,11 +432,25 @@ const AddBook = () => {
         <label>Genres</label>
         <input
           type="text"
-          name="categories"
+          name="genres"
           placeholder="Genres (comma separated)"
-          value={bookData.categories}
+          value={bookData.genres}
           onChange={handleChange}
         />
+
+        {genresSuggestions.length > 0 && (
+          <ul className="suggestions">
+            {genresSuggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion, 'genre')}
+                style={{ cursor: 'pointer' }}
+              >
+                {suggestion}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <label>Description</label>
           <textarea

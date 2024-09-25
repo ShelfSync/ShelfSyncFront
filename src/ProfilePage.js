@@ -9,7 +9,6 @@ const ProfilePage = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
-    const [user, setUsers] = useState({});
     const [bookCount, setBookCount] = useState(); 
     const [isPrivate, setIsPrivate] = useState(false); 
 

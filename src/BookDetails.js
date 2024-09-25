@@ -10,7 +10,7 @@ const BookDetails = ({ book, closeDetails }) => {
   const [year, setYear] = useState(book.year);
   const [isbn, setIsbn] = useState(book.isbn);
 
-  const [readDate, setReadDate] = useState(book.readedDate);
+  const [readedDate, setreadedDate] = useState(book.readedDate);
   const [addedDate, setAddedDate] = useState(book.addedData);
   const [pageCount, setPageCount] = useState(book.page);
   const [description, setDescription] = useState(book.description);
@@ -25,7 +25,7 @@ const BookDetails = ({ book, closeDetails }) => {
         altAuthor,
         publisher,
         version,
-        readDate,
+        readedDate,
         addedDate,
         page: pageCount,
         description,
@@ -82,7 +82,7 @@ const BookDetails = ({ book, closeDetails }) => {
           </p>
           <p>
             <span style={{ fontWeight: 'bold' }}>Read Date:</span> 
-            {isEditing ? <input type="date" value={readDate} onChange={(e) => setReadDate(e.target.value)} /> : readDate}
+            {isEditing ? <input type="date" value={readedDate} onChange={(e) => setreadedDate(e.target.value)} /> : readedDate}
           </p>
           <p>
             <span style={{ fontWeight: 'bold' }}>Added Date:</span> 
