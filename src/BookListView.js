@@ -100,9 +100,9 @@ const BookListView = () => {
               {visibleColumns.altAuthor && <div className="book-table-column">{book.altAuthor}</div>}
               {visibleColumns.publisher && <div className="book-table-column">{book.publisher}</div>}
               {visibleColumns.year && <div className="book-table-column">{book.year}</div>}
-              {visibleColumns.pageCount && <div className="book-table-column">{book.pageCount}</div>}
+              {visibleColumns.pageCount && <div className="book-table-column">{book.page}</div>}
               {visibleColumns.readedDate && <div className="book-table-column">{book.readedDate}</div>}
-              {visibleColumns.addedDate && <div className="book-table-column">{book.addedDate}</div>}
+              {visibleColumns.addedDate && <div className="book-table-column">{book.addedData}</div>}
               {visibleColumns.version && <div className="book-table-column">{book.version}</div>}
               {visibleColumns.categories && (
                 <div className="book-table-column categories-column">
