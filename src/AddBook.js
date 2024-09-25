@@ -3,7 +3,6 @@ import axios from 'axios';
 import './AddBook.css';
 import Layout from './Layout';
 
-
 const AddBook = () => {
   const [bookData, setBookData] = useState({
     title: '',
@@ -26,6 +25,18 @@ const AddBook = () => {
   const [authorSuggestions, setAuthorSuggestions] = useState([]);
   const [altAuthorSuggestions, setAltAuthorSuggestions] = useState([]);
   const [publisherSuggestions, setPublisherSuggestions] = useState([]);
+  
+  // Used to obtain userId from token
+  function parseJWT(token) {
+    const base64Url = token.split('.')[1];
+  
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+  }
+
   useEffect(() => {
     axios.get('/Books.json')  
       .then(response => {
@@ -84,7 +95,6 @@ const AddBook = () => {
       [fieldName]: value
     }));
 
-    // Clear suggestions for the relevant field
     if (fieldName === 'title') {
       setTitleSuggestions([]);
     } else if (fieldName === 'author') {
@@ -96,46 +106,53 @@ const AddBook = () => {
     }
   };
 
-  
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    const userId = parseJWT(token).id;
+    console.log(userId);
 
-    const bookText = `
-      Title: ${bookData.title}
-      Read Date: ${bookData.readDate}
-      Cover: ${bookData.cover}
-      Description: ${bookData.description}
-      Author: ${bookData.author}
-      Alt Author: ${bookData.altAuthor}
-      Isbn: ${bookData.isbn}
-      Publisher: ${bookData.publisher}
-      Version: ${bookData.version}
-      Year: ${bookData.year}
-      Page: ${bookData.page}
-      Categories: ${bookData.categories.split(',').join(', ')}
-      Reading Status: ${bookData.readingStatus === '0' ? 'Okunmadı' : bookData.readingStatus === '1' ? 'Okuyor' : 'Okundu'}
-    `;
+    try {
+      // Convert genres into array
+      const genresArray = bookData.categories.split(',').map(genre => genre.trim()).filter(genre => genre !== '');
+      const response = await axios.post('http://localhost:5193/api/Books', {
+        userId: userId,
+        title: bookData.title,
+        author: bookData.author,
+        altAuthor: bookData.altAuthor,
+        isbn: bookData.isbn,
+        publisher: bookData.publisher,
+        version: bookData.version,
+        year: bookData.year,
+        pageCount: bookData.page,
+        readingStatus: bookData.readingStatus,
+        description: bookData.description,
+        coverType: bookData.cover,
+        genres: genresArray,
+        readedDate: bookData.readDate,
+                    
+      });
 
+      console.log('Kitap başarıyla eklendi:', response.data);
 
-    
-    
-
-    // Reset form after submit
-    setBookData({
-      title: '',
-      readDate: '',
-      cover: '',
-      description: '',
-      author: '',
-      altAuthor: '',
-      publisher: '',
-      version: '',
-      year: '',
-      page: '',
-      categories: ''
-    });
+      setBookData({
+        title: '',
+        readDate: '',
+        cover: '',
+        description: '',
+        author: '',
+        altAuthor: '',
+        publisher: '',
+        isbn: '',
+        version: '',
+        year: '',
+        page: '',
+        categories: '',
+        readingStatus: '0'
+      });
+    } catch (error) {
+      console.error('Kitap eklenirken bir hata oluştu:', error);
+    }
   };
 
   const [selectedCover, setSelectedCover] = useState('');
@@ -146,6 +163,7 @@ const AddBook = () => {
     { id: '2', src: 'https://content.wepik.com/statics/90897927/preview-page0.jpg', alt: 'Kapak 2' },
     { id: '3', src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKm-kN6SwgdZumonm7WhwrQofo8b9_kfxf-A&s', alt: 'Kapak 3' }
   ];
+
   const handleCoverSelect = (coverId) => {
     setSelectedCover(coverId);
     setUploadedCover(null);

@@ -1,8 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import BookDetails from './BookDetails';
 import Layout from './Layout';
 
-const BookListView = ({ books }) => {
+const BookListView = () => {
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:5193/api/Books', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+      .then(response => {
+        setBooks(response.data.data);
+      })
+      .catch(error => {
+        console.error("There was an error fetching the books!", error);
+      });
+  }, []);
   const [selectedBook, setSelectedBook] = useState(null);
   const [visibleColumns, setVisibleColumns] = useState({
     title: true,

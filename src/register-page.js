@@ -26,7 +26,7 @@ const RegisterPage = () => {
             headers: headers,
         })
         .then(response => {            
-            const token = response.data.token; 
+            const token = response.data.data.accessToken; 
             localStorage.setItem('token', token); 
             alert('Login successful!');
             navigate('/main'); 
@@ -53,7 +53,6 @@ const RegisterPage = () => {
             headers: headers,
         })
         .then(response => {
-            console.log(response);
             alert('Registration successful!');
             navigate('/main'); 
         })
@@ -95,3 +94,5 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+
+

@@ -2,16 +2,31 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const BookDetails = ({ book, closeDetails }) => {
+  const [title, setTitle] = useState(book.title);
+  const [author, setAuthor] = useState(book.author);
+  const [altAuthor, setAltAuthor] = useState(book.altAuthor);
+  const [publisher, setPublisher] = useState(book.publisher);
+  const [version, setVersion] = useState(book.version);
+  const [readDate, setReadDate] = useState(book.readDate);
+  const [addedDate, setAddedDate] = useState(book.addedDate);
+  const [pageCount, setPageCount] = useState(book.page);
   const [description, setDescription] = useState(book.description);
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
-  };
-
   const handleSave = async () => {
     try {
-      await axios.post('https://test.test', { ...book, description });
+      await axios.post('https://test.test', {
+        ...book,
+        title,
+        author,
+        altAuthor,
+        publisher,
+        version,
+        readDate,
+        addedDate,
+        page: pageCount,
+        description,
+      });
       setIsEditing(false);
     } catch (error) {
       console.error('Error saving book details', error);
@@ -28,15 +43,15 @@ const BookDetails = ({ book, closeDetails }) => {
             <div className="book-onTitle">{book.title}</div>
           </div>
           <div className="categories-container">
-          {book.categories.map((category, index) => (
-            <div key={index} className="category-item">
-              {category}
-            </div>
-          ))}
-        </div>
+            {book.genres.map((genre) => (
+              <div key={genre.id} className="category-item">
+                {genre.name}
+              </div>
+            ))}
+          </div>
         </div>
         <div className="book-info">
-          <h2>{book.title}</h2>
+          <h2>{title}</h2>
           <p>
             <span style={{ fontWeight: 'bold' }}>Author:</span> {book.author}
           </p>
@@ -64,12 +79,43 @@ const BookDetails = ({ book, closeDetails }) => {
           </p>
           {isEditing ? (
             <>
-              <textarea
-                value={description}
-                onChange={handleDescriptionChange}
-                rows="5"
-                cols="30"
-              />
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Author:</span>
+                <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Alt Author:</span>
+                <input type="text" value={altAuthor} onChange={(e) => setAltAuthor(e.target.value)} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Publisher:</span>
+                <input type="text" value={publisher} onChange={(e) => setPublisher(e.target.value)} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Version:</span>
+                <input type="number" value={version} onChange={(e) => setVersion(Number(e.target.value))} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Read Date:</span>
+                <input type="date" value={readDate} onChange={(e) => setReadDate(e.target.value)} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Added Date:</span>
+                <input type="date" value={addedDate} onChange={(e) => setAddedDate(e.target.value)} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Page Count:</span>
+                <input type="number" value={pageCount} onChange={(e) => setPageCount(Number(e.target.value))} />
+              </p>
+              <p>
+                <span style={{ fontWeight: 'bold' }}>Description:</span>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows="5"
+                  cols="30"
+                />
+              </p>
               <button onClick={handleSave}>Save</button>
             </>
           ) : (
