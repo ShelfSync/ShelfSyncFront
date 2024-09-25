@@ -1,5 +1,5 @@
 import React from 'react';
-import './styles/BuyCoffee.css'; // Stilleri ayrı bir dosyaya almak isterseniz
+import './styles/BuyCoffee.css'; 
 import Layout from './Layout';
 
 const BuyCoffee = () => {
@@ -7,7 +7,6 @@ const BuyCoffee = () => {
     <Layout>
     <div className="buy-coffee-container">
       <div className="coffee-icon">
-        {/* Kahve ikonu için basit bir emoji veya bir SVG kullanılabilir */}
         <span role="img" aria-label="coffee">☕</span>
       </div>
       <h2 className="buy-coffee-title">Buy Us a Coffee!</h2>

@@ -1,6 +1,5 @@
-// src/components/Layout.js
 import React from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom'; 
 import defaultProfilePic from './covers/nidarda.JPG'; 
 import './styles/material-dashboard.css';
 
@@ -57,7 +56,7 @@ const Layout = ({ children }) => {
               </a>
             </li>
             <li style={{ listStyle: 'none', marginTop: '30%' }}>
-              <a className="nav-link" href="#!" onClick={handleLogout}> {/* href yerine onClick kullanıyoruz */}
+              <a className="nav-link" href="" onClick={handleLogout}> 
                 <i className="material-icons">logout</i>
                 <p>Logout</p>
               </a>

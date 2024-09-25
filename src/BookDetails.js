@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const BookDetails = ({ book, closeDetails }) => {
-  const [title, setTitle] = useState(book.title);
+  const title = book.title;
   const [author, setAuthor] = useState(book.author);
   const [altAuthor, setAltAuthor] = useState(book.altAuthor);
   const [publisher, setPublisher] = useState(book.publisher);

@@ -10,8 +10,8 @@ const ProfilePage = () => {
     const [newPassword, setNewPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [user, setUsers] = useState({});
-    const [bookCount, setBookCount] = useState(); // State for book count
-    const [isPrivate, setIsPrivate] = useState(false); // State for privacy toggle
+    const [bookCount, setBookCount] = useState(); 
+    const [isPrivate, setIsPrivate] = useState(false); 
 
     useEffect(() => {
         const token = localStorage.getItem('token');

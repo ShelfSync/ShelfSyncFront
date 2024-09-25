@@ -68,17 +68,17 @@ body {
     padding-top: 10px;
     width: 300px;
     display: flex;
-    gap: 10px; /* Öğeler arasındaki boşluk */
-    flex-wrap: wrap; /* Çok fazla öğe varsa satırı sarar */
+    gap: 10px; 
+    flex-wrap: wrap; 
   }
   
   .category-item {
     background-color: #00611bda;
     font-size: 14px;
     color: white;
-    padding: 10px; /* İç boşluk */
-    border-radius: 5px; /* Kenarları yuvarlatma */
-    box-shadow: 0 0 5px rgba(0,0,0,0.2); /* Gölge efekti */
+    padding: 10px; 
+    border-radius: 5px; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.2); 
   }
 
 
@@ -179,10 +179,10 @@ body {
   }
 
   .book-table-column {
-    width: 150px; /* Sabit genişlik */
-    white-space: nowrap; /* Metnin alt satıra geçmesini engelle */
-    overflow: hidden; /* Taşan metni gizle */
-    text-overflow: ellipsis; /* Taşan metin için '...' göster */
+    width: 150px; 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
     padding: 8px;
     border-bottom: 1px solid #ddd;
   }

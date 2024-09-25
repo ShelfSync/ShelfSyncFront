@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import './styles/register.css';
 import logo from './covers/shelfLogo.png';
 import axios from 'axios';
