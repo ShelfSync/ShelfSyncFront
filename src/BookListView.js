@@ -135,7 +135,7 @@ const BookListView = () => {
             {visibleColumns.categories && (
               <div className="book-table-column categories-column">
                 {book.genres.map((genre) => (
-              <div key={genre.id} className="category-item">
+              <div key={genre.id} className="category">
                 {genre.name}
               </div>
             ))}
