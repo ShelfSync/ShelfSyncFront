@@ -105,16 +105,23 @@ body {
     border-radius: 5px;
   }
 
-  .book-info{
-    text-align: left;
-    padding-left: 20px;
-  }
+  
 
   .book-info {
     text-align: left;
     padding-left: 20px;
     display: flex;
     flex-direction: column;
+  }
+
+  .book-info input{
+    margin: 0px;
+    border:none;
+    padding: 0px;
+  }
+
+  .book-info span{
+    margin-right: 5px;
   }
   
   .description {

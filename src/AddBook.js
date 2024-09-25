@@ -147,7 +147,7 @@ const AddBook = () => {
         description: bookData.description,
         coverType: bookData.cover,
         genres: genresArray,
-        readedDate: bookData.readedDate,
+        readedDate: bookData.readedDate ? bookData.readedDate : null,
                     
       });
 

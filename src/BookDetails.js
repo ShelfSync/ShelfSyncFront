@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 
 const BookDetails = ({ book, closeDetails }) => {
-  const title = book.title;
+  const [title, setTitle] = useState(book.title);
   const [author, setAuthor] = useState(book.author);
   const [altAuthor, setAltAuthor] = useState(book.altAuthor);
   const [publisher, setPublisher] = useState(book.publisher);
@@ -54,7 +54,9 @@ const BookDetails = ({ book, closeDetails }) => {
           </div>
         </div>
         <div className="book-info">
-          <h2>{ title}</h2>
+          <h2>
+            {isEditing ? <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} /> : title}
+          </h2>
           
           <p>
             <span style={{ fontWeight: 'bold' }}>Author:</span> 
