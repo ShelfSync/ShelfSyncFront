@@ -59,102 +59,51 @@ const AddBook = () => {
       ...prevState,
       [name]: value
     }));
+  
+    // Clear suggestions if input is cleared
+    if (value === '') {
+      if (name === 'title') {
+        setTitleSuggestions([]);
+      } else if (name === 'author') {
+        setAuthorSuggestions([]);
+      } else if (name === 'altAuthor') {
+        setAltAuthorSuggestions([]);
+      } else if (name === 'publisher') {
+        setPublisherSuggestions([]);
+      } else if (name === 'genres') {
+        setGenresSuggestions([]);
+      }
+      return; // Exit early if input is cleared
+    }
 
     // Fetch suggestions based on the input value
+    const fetchSuggestions = async (propertyName, value, setSuggestions) => {
+      try {
+        const apiUrl = value.length < 3
+          ? 'http://localhost:5193/api/Books/StartsWith'
+          : 'http://localhost:5193/api/Books/Include';
+
+        const response = await axios.get(apiUrl, {
+          params: { Word: value, PropertyName: propertyName }
+        });
+        setSuggestions(response.data.data.suggestions);
+      } catch (error) {
+        console.error(`Error fetching ${propertyName} suggestions:`, error);
+      }
+    };
+
     if (name === 'title' && value.length > 0) {
-      try {
-        if (value.length < 3) {
-          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
-            params: { Word: value, PropertyName: 'title' }
-          });
-          setTitleSuggestions(response.data.data.suggestions); 
-        } else {
-          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
-            params: { Word: value, PropertyName: 'title' }
-          });
-          setTitleSuggestions(response.data.data.suggestions); 
-        }
-      } catch (error) {
-        console.error("Error fetching title suggestions:", error);
-      }
+      await fetchSuggestions('title', value, setTitleSuggestions);
+    } else if (name === 'author' && value.length > 0) {
+      await fetchSuggestions('author', value, setAuthorSuggestions);
+    } else if (name === 'altAuthor' && value.length > 0) {
+      await fetchSuggestions('altAuthor', value, setAltAuthorSuggestions);
+    } else if (name === 'publisher' && value.length > 0) {
+      await fetchSuggestions('publisher', value, setPublisherSuggestions);
+    } else if (name === 'genres' && value.length > 0) {
+      await fetchSuggestions('genres', value, setGenresSuggestions);
     }
-
-    else  if (name === 'author'&& value.length > 0) {
-      try {
-        if (value.length < 3) {
-          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
-            params: { Word: value, PropertyName: 'author' }
-          });
-          setAuthorSuggestions(response.data.data.suggestions); 
-        } else {
-          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
-            params: { Word: value, PropertyName: 'author' }
-          });
-          setAuthorSuggestions(response.data.data.suggestions); 
-        }
-      } catch (error) {
-        console.error("Error fetching author suggestions:", error);
-      }
-    }
-
-    else  if (name === 'altAuthor'&& value.length > 0) {
-      try {
-        if (value.length < 3) {
-          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
-            params: { Word: value, PropertyName: 'altAuthor' }
-          });
-          setAltAuthorSuggestions(response.data.data.suggestions); 
-        } else {
-          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
-            params: { Word: value, PropertyName: 'altAuthor' }
-          });
-          setAltAuthorSuggestions(response.data.data.suggestions); 
-        }
-      } catch (error) {
-        console.error("Error fetching altAuthor suggestions:", error);
-      }
-    }
-
-    else  if (name === 'publisher' && value.length > 0) {
-      try {
-        if (value.length < 3) {
-          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
-            params: { Word: value, PropertyName: 'publisher' }
-          });
-          setPublisherSuggestions(response.data.data.suggestions); 
-        } else {
-          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
-            params: { Word: value, PropertyName: 'publisher' }
-          });
-          setPublisherSuggestions(response.data.data.suggestions); 
-        }
-      } catch (error) {
-        console.error("Error fetching publisher suggestions:", error);
-      }
-    }
-
-    else  if (name === 'genre' && value.length > 0) {
-      try {
-        if (value.length < 3) {
-          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
-            params: { Word: value, PropertyName: 'genre' }
-          });
-          setGenresSuggestions(response.data.data.suggestions); 
-        } else {
-          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
-            params: { Word: value, PropertyName: 'genre' }
-          });
-          setGenresSuggestions(response.data.data.suggestions); 
-        }
-      } catch (error) {
-        console.error("Error fetching genre suggestions:", error);
-      }
-    }
-
-    
-  
-  
-  }
+  };
 
   const handleSuggestionClick = (value, fieldName) => {
     setBookData(prevState => ({
@@ -166,9 +115,11 @@ const AddBook = () => {
       setTitleSuggestions([]);
     } else if (fieldName === 'author') {
       setAuthorSuggestions([]);
-    } else if (fieldName === 'publisher') {
+    } else if (fieldName === 'altAuthor') {
+      setAltAuthorSuggestions([]);
+    }else if (fieldName === 'publisher') {
       setPublisherSuggestions([]);
-    }  else if (fieldName === 'genre') {
+    }  else if (fieldName === 'genres') {
       setGenresSuggestions([]);
     }
    
@@ -430,27 +381,27 @@ const AddBook = () => {
         </select>
 
         <label>Genres</label>
-        <input
-          type="text"
-          name="genres"
-          placeholder="Genres (comma separated)"
-          value={bookData.genres}
-          onChange={handleChange}
-        />
-
-        {genresSuggestions.length > 0 && (
-          <ul className="suggestions">
-            {genresSuggestions.map((suggestion, index) => (
-              <li
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion, 'genre')}
-                style={{ cursor: 'pointer' }}
-              >
-                {suggestion}
-              </li>
-            ))}
-          </ul>
-        )}
+          <input
+            type="text"
+            name="genres"
+            placeholder="Genres (comma-separated)"
+            value={bookData.genres}
+            onChange={handleChange}
+            required
+          />
+          {genresSuggestions.length > 0 && (
+            <ul className="suggestions">
+              {genresSuggestions.map((suggestion, index) => (
+                <li
+                  key={index}
+                  onClick={() => handleSuggestionClick(suggestion, 'genres')}
+                  style={{ cursor: 'pointer' }}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
 
         <label>Description</label>
           <textarea
