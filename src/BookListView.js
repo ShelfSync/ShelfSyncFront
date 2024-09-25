@@ -20,6 +20,7 @@ const BookListView = () => {
         console.error("There was an error fetching the books!", error);
       });
   }, []);
+
   const [selectedBook, setSelectedBook] = useState(null);
   const [visibleColumns, setVisibleColumns] = useState({
     title: true,
@@ -65,10 +66,7 @@ const BookListView = () => {
     const term = searchTerm.toLowerCase();
     if (searchCategory === 'title') {
       return book.title.toLowerCase().includes(term);
-    } else if (searchCategory === 'year') {
-      return book.year.toLowerCase().includes(term);
-    } else if (searchCategory === 'category') {
-      return book.categories.some((category) => category.toLowerCase().includes(term));
+    
     } else if (searchCategory === 'publisher') {
       return book.publisher.toLowerCase().includes(term);
     } else if (searchCategory === 'author') {
@@ -89,8 +87,6 @@ const BookListView = () => {
         />
         <select className='search-options' value={searchCategory} onChange={handleCategoryChange}>
           <option value="title">Title</option>
-          <option value="year">Year</option>
-          <option value="category">Category</option>
             <option value="publisher">Publisher</option>
             <option value="author">Author</option>
         </select>
@@ -133,14 +129,16 @@ const BookListView = () => {
             {visibleColumns.publisher && <div className="book-table-column">{book.publisher}</div>}
             {visibleColumns.year && <div className="book-table-column">{book.year}</div>}
             {visibleColumns.page && <div className="book-table-column">{book.page}</div>}
-            {visibleColumns.readDate && <div className="book-table-column">{book.readDate}</div>}
-            {visibleColumns.addedDate && <div className="book-table-column">{book.addedDate}</div>}
+            {visibleColumns.readDate && <div className="book-table-column">{book.readedDate}</div>}
+            {visibleColumns.addedDate && <div className="book-table-column">{book.addedData}</div>}
             {visibleColumns.version && <div className="book-table-column">{book.version}</div>}
             {visibleColumns.categories && (
               <div className="book-table-column categories-column">
-                {book.categories.map((category, index) => (
-                  <div key={index} className="book-category-item">{category}</div>
-                ))}
+                {book.genres.map((genre) => (
+              <div key={genre.id} className="category-item">
+                {genre.name}
+              </div>
+            ))}
               </div>
             )}
             {visibleColumns.description && <div className="book-table-column">{book.description}</div>}

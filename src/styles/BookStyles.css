@@ -177,6 +177,36 @@ body {
     display: flex;
     background-color: #f9f9f9;
   }
+
+  .book-table-column {
+    width: 150px; /* Sabit genişlik */
+    white-space: nowrap; /* Metnin alt satıra geçmesini engelle */
+    overflow: hidden; /* Taşan metni gizle */
+    text-overflow: ellipsis; /* Taşan metin için '...' göster */
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .book-table-header .book-table-column {
+    font-weight: bold;
+    background-color: #f4f4f4;
+  }
+  
+  .book-table-row {
+    display: flex;
+  }
+  
+  .categories-column {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .category-item {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
   
   .book-table-column {
     font-size: 14px;
@@ -205,6 +235,16 @@ body {
     border: 1px solid #ddd;
     color:rgba(0, 0, 0, 0.822);
     border-radius: 4px;
+  }
+
+  .search-bar select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    color:rgba(0, 0, 0, 0.822);
+    font-family: Arial, sans-serif;
+    border-radius: 4px;
+    max-height: 40px;
   }
 
 

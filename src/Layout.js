@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import defaultProfilePic from './covers/nidarda.JPG'; 
-import './material-dashboard.css';
+import './styles/material-dashboard.css';
 
 const Layout = ({ children }) => {
   const navigate = useNavigate(); 

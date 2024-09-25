@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import BookDetails from './BookDetails';
-import './BookStyles.css';
+import './styles/BookStyles.css';
 import Layout from './Layout';
 
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import './register.css';
+import './styles/register.css';
 import logo from './covers/shelfLogo.png';
 import axios from 'axios';
 
@@ -29,7 +29,7 @@ const RegisterPage = () => {
             const token = response.data.data.accessToken; 
             localStorage.setItem('token', token); 
             alert('Login successful!');
-            navigate('/main'); 
+            navigate('/library'); 
         })
         .catch(error => {
             setErrorMessage('Login failed. Please try again.');
@@ -54,7 +54,6 @@ const RegisterPage = () => {
         })
         .then(response => {
             alert('Registration successful!');
-            navigate('/main'); 
         })
         .catch(error => {
             setErrorMessage('Registration failed. Please try again.');

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import './AddBook.css';
+import './styles/AddBook.css';
 import Layout from './Layout';
 
 const AddBook = () => {
@@ -20,7 +20,6 @@ const AddBook = () => {
     readingStatus: '0' //default value is not readed
   });
   
-  const [books, setBooks] = useState([]);
   const [titleSuggestions, setTitleSuggestions] = useState([]);
   const [authorSuggestions, setAuthorSuggestions] = useState([]);
   const [altAuthorSuggestions, setAltAuthorSuggestions] = useState([]);
@@ -37,57 +36,92 @@ const AddBook = () => {
     return JSON.parse(jsonPayload);
   }
 
-  useEffect(() => {
-    axios.get('/Books.json')  
-      .then(response => {
-        setBooks(response.data);
-      })
-      .catch(error => {
-        console.error("Error fetching books:", error);
-      });
-  }, []);
+  
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { name, value } = e.target;
     setBookData(prevState => ({
       ...prevState,
       [name]: value
     }));
 
-    if (name === 'title') {
-      const filteredTitleSuggestions = books.filter(book =>
-        book.title.toLowerCase().includes(value.toLowerCase())
-      );
-      setTitleSuggestions(filteredTitleSuggestions);
+    // Fetch suggestions based on the input value
+    if (name === 'title' && value.length > 0) {
+      try {
+        if (value.length < 3) {
+          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
+            params: { Word: value, PropertyName: 'title' }
+          });
+          setTitleSuggestions(response.data.data.suggestions); 
+        } else {
+          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
+            params: { Word: value, PropertyName: 'title' }
+          });
+          setTitleSuggestions(response.data.data.suggestions); 
+        }
+      } catch (error) {
+        console.error("Error fetching title suggestions:", error);
+      }
     }
 
-    if (name === 'author') {
-      const filteredAuthorSuggestions = books
-        .map(book => book.author)
-        .filter((author, index, self) =>
-          author.toLowerCase().includes(value.toLowerCase()) && self.indexOf(author) === index
-        );
-      setAuthorSuggestions(filteredAuthorSuggestions);
+    else  if (name === 'author'&& value.length > 0) {
+      try {
+        if (value.length < 3) {
+          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
+            params: { Word: value, PropertyName: 'author' }
+          });
+          setAuthorSuggestions(response.data.data.suggestions); 
+        } else {
+          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
+            params: { Word: value, PropertyName: 'author' }
+          });
+          setAuthorSuggestions(response.data.data.suggestions); 
+        }
+      } catch (error) {
+        console.error("Error fetching author suggestions:", error);
+      }
     }
 
-    if (name === 'altAuthor') {
-      const filteredAltAuthorSuggestions = books
-        .map(book => book.altAuthor)
-        .filter((altAuthor, index, self) =>
-          altAuthor.toLowerCase().includes(value.toLowerCase()) && self.indexOf(altAuthor) === index
-        );
-      setAltAuthorSuggestions(filteredAltAuthorSuggestions);
+    else  if (name === 'altAuthor'&& value.length > 0) {
+      try {
+        if (value.length < 3) {
+          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
+            params: { Word: value, PropertyName: 'altAuthor' }
+          });
+          setAltAuthorSuggestions(response.data.data.suggestions); 
+        } else {
+          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
+            params: { Word: value, PropertyName: 'altAuthor' }
+          });
+          setAltAuthorSuggestions(response.data.data.suggestions); 
+        }
+      } catch (error) {
+        console.error("Error fetching altAuthor suggestions:", error);
+      }
     }
 
-    if (name === 'publisher') {
-      const filteredPublisherSuggestions = books
-        .map(book => book.publisher)
-        .filter((publisher, index, self) =>
-          publisher.toLowerCase().includes(value.toLowerCase()) && self.indexOf(publisher) === index
-        );
-      setPublisherSuggestions(filteredPublisherSuggestions);
+    else  if (name === 'publisher' && value.length > 0) {
+      try {
+        if (value.length < 3) {
+          const response = await axios.get(`http://localhost:5193/api/Books/StartsWith`, {
+            params: { Word: value, PropertyName: 'publisher' }
+          });
+          setPublisherSuggestions(response.data.data.suggestions); 
+        } else {
+          const response = await axios.get(`http://localhost:5193/api/Books/Include`, {
+            params: { Word: value, PropertyName: 'publisher' }
+          });
+          setPublisherSuggestions(response.data.data.suggestions); 
+        }
+      } catch (error) {
+        console.error("Error fetching publisher suggestions:", error);
+      }
     }
-  };
+
+    
+  
+  
+  }
 
   const handleSuggestionClick = (value, fieldName) => {
     setBookData(prevState => ({
@@ -99,8 +133,6 @@ const AddBook = () => {
       setTitleSuggestions([]);
     } else if (fieldName === 'author') {
       setAuthorSuggestions([]);
-    } else if (fieldName === 'altAuthor') {
-      setAltAuthorSuggestions([]);
     } else if (fieldName === 'publisher') {
       setPublisherSuggestions([]);
     }
@@ -110,7 +142,6 @@ const AddBook = () => {
     e.preventDefault();
     const token = localStorage.getItem('token');
     const userId = parseJWT(token).id;
-    console.log(userId);
 
     try {
       // Convert genres into array
@@ -135,6 +166,7 @@ const AddBook = () => {
 
       console.log('Kitap başarıyla eklendi:', response.data);
 
+      //clear input fields after submit
       setBookData({
         title: '',
         readDate: '',
@@ -203,10 +235,10 @@ const AddBook = () => {
             {titleSuggestions.map((suggestion, index) => (
               <li
                 key={index}
-                onClick={() => handleSuggestionClick(suggestion.title, 'title')}
+                onClick={() => handleSuggestionClick(suggestion, 'title')}
                 style={{ cursor: 'pointer' }}
               >
-                {suggestion.title}
+                {suggestion}
               </li>
             ))}
           </ul>
@@ -264,8 +296,9 @@ const AddBook = () => {
             ))}
           </ul>
         )}
+        
 
-<label>Isbn</label>
+        <label>Isbn</label>
         <input
           type="text"
           name="isbn"
@@ -297,6 +330,7 @@ const AddBook = () => {
             ))}
           </ul>
         )}
+
         <label>Version</label>
         <input
           type="number"

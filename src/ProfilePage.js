@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './profile.css';
+import './styles/profile.css';
 import defaultProfilePic from './covers/nidarda.JPG'; 
 import axios from 'axios';
 
@@ -10,7 +10,25 @@ const ProfilePage = () => {
     const [newPassword, setNewPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [user, setUsers] = useState({});
+    const [bookCount, setBookCount] = useState(); // State for book count
     const [isPrivate, setIsPrivate] = useState(false); // State for privacy toggle
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        axios.get('http://localhost:5193/api/Books', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+        })
+        .then(response => {
+            const bookCount = response.data.data.length;
+            setBookCount(bookCount);
+            
+        })
+        .catch(error => {
+            console.error("There was an error fetching the books!", error);
+        });
+    }, []);
 
     useEffect(() => {
         axios.get('./User.json')
@@ -23,6 +41,18 @@ const ProfilePage = () => {
             });
     }, []);
 
+    function parseJWT(token) {
+        const base64Url = token.split('.')[1];
+      
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+      }
+
+     const token = localStorage.getItem('token');
+     const username = parseJWT(token).username;
     const navigate = useNavigate(); 
 
     const handleFileChange = (event) => {
@@ -87,7 +117,7 @@ const ProfilePage = () => {
                     &larr; 
                 </button>
                 <img src={profilePic} alt="Profile" className="profile-pic" />
-                <h1>{user.username}</h1>
+                <h1>{username}</h1>
                 <label className="upload-button">
                     <input type="file" accept="image/*" onChange={handleFileChange} />
                     Change Profile Picture
@@ -97,11 +127,11 @@ const ProfilePage = () => {
                 <h2>Profile Information</h2>
                 <div className="profile-info-item">
                     <label>Username:</label>
-                    <p>{user.username}</p>
+                    <p>{username}</p>
                 </div>
                 <div className="profile-info-item">
                     <label>Book Count:</label>
-                    <p>{user.bookCount}</p>
+                    <p>{bookCount}</p>
                 </div>
                 <div className="profile-info-item">
                     <label>Private Profile:</label>

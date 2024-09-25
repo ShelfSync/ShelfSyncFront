@@ -7,8 +7,11 @@ const BookDetails = ({ book, closeDetails }) => {
   const [altAuthor, setAltAuthor] = useState(book.altAuthor);
   const [publisher, setPublisher] = useState(book.publisher);
   const [version, setVersion] = useState(book.version);
-  const [readDate, setReadDate] = useState(book.readDate);
-  const [addedDate, setAddedDate] = useState(book.addedDate);
+  const [year, setYear] = useState(book.year);
+  const [isbn, setIsbn] = useState(book.isbn);
+
+  const [readDate, setReadDate] = useState(book.readedDate);
+  const [addedDate, setAddedDate] = useState(book.addedData);
   const [pageCount, setPageCount] = useState(book.page);
   const [description, setDescription] = useState(book.description);
   const [isEditing, setIsEditing] = useState(false);
@@ -51,80 +54,59 @@ const BookDetails = ({ book, closeDetails }) => {
           </div>
         </div>
         <div className="book-info">
-          <h2>{title}</h2>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Author:</span> {book.author}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Alt Author:</span> {book.altAuthor}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Publisher:</span> {book.publisher}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Version:</span> {book.version}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Read Date:</span> {book.readDate}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Added Date:</span> {book.addedDate}
-          </p>
-          <p>
-            <span style={{ fontWeight: 'bold' }}>Page Count:</span> {book.page}
-          </p>
+          <h2>{ title}</h2>
           
           <p>
-            <span style={{ fontWeight: 'bold' }}>Description: </span> 
+            <span style={{ fontWeight: 'bold' }}>Author:</span> 
+            {isEditing ? <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} /> : author}
           </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Alt Author:</span> 
+            {isEditing ? <input type="text" value={altAuthor} onChange={(e) => setAltAuthor(e.target.value)} /> : altAuthor}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Publisher:</span> 
+            {isEditing ? <input type="text" value={publisher} onChange={(e) => setPublisher(e.target.value)} /> : publisher}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Version:</span> 
+            {isEditing ? <input type="number" value={version} onChange={(e) => setVersion(Number(e.target.value))} /> : version}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Year:</span> 
+            {isEditing ? <input type="number" value={year} onChange={(e) => setYear(Number(e.target.value))} /> : year}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Isbn:</span> 
+            {isEditing ? <input type="text" value={isbn} onChange={(e) => setIsbn(Number(e.target.value))} /> : isbn}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Read Date:</span> 
+            {isEditing ? <input type="date" value={readDate} onChange={(e) => setReadDate(e.target.value)} /> : readDate}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Added Date:</span> 
+            {isEditing ? <input type="date" value={addedDate} onChange={(e) => setAddedDate(e.target.value)} /> : addedDate}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Page Count:</span> 
+            {isEditing ? <input type="number" value={pageCount} onChange={(e) => setPageCount(Number(e.target.value))} /> : pageCount}
+          </p>
+          <p>
+            <span style={{ fontWeight: 'bold' }}>Description:</span> 
+            {isEditing ? (
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} rows="5" cols="30" />
+            ) : (
+              description
+            )}
+          </p>
+          
           {isEditing ? (
-            <>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Author:</span>
-                <input type="text" value={author} onChange={(e) => setAuthor(e.target.value)} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Alt Author:</span>
-                <input type="text" value={altAuthor} onChange={(e) => setAltAuthor(e.target.value)} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Publisher:</span>
-                <input type="text" value={publisher} onChange={(e) => setPublisher(e.target.value)} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Version:</span>
-                <input type="number" value={version} onChange={(e) => setVersion(Number(e.target.value))} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Read Date:</span>
-                <input type="date" value={readDate} onChange={(e) => setReadDate(e.target.value)} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Added Date:</span>
-                <input type="date" value={addedDate} onChange={(e) => setAddedDate(e.target.value)} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Page Count:</span>
-                <input type="number" value={pageCount} onChange={(e) => setPageCount(Number(e.target.value))} />
-              </p>
-              <p>
-                <span style={{ fontWeight: 'bold' }}>Description:</span>
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows="5"
-                  cols="30"
-                />
-              </p>
-              <button onClick={handleSave}>Save</button>
-            </>
+            <button onClick={handleSave}>Save</button>
           ) : (
-            <div className="description">
-              <p>{description}</p>
-              <button className="edit-button" onClick={() => setIsEditing(true)}>
-                Edit
-              </button>
-            </div>
+            <button className="edit-button" onClick={() => setIsEditing(true)}>
+              Edit
+            </button>
           )}
         </div>
       </div>

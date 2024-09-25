@@ -1,5 +1,5 @@
 import React from 'react';
-import './BuyCoffee.css'; // Stilleri ayrı bir dosyaya almak isterseniz
+import './styles/BuyCoffee.css'; // Stilleri ayrı bir dosyaya almak isterseniz
 import Layout from './Layout';
 
 const BuyCoffee = () => {
