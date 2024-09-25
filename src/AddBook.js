@@ -27,6 +27,7 @@ const AddBook = () => {
   const [altAuthorSuggestions, setAltAuthorSuggestions] = useState([]);
   const [publisherSuggestions, setPublisherSuggestions] = useState([]);
   const [genresSuggestions, setGenresSuggestions] = useState([]);
+  
   const [scannerActive, setScannerActive] = useState(false);
 
   // Used to obtain userId from token

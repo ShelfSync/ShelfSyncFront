@@ -14,10 +14,14 @@ const BookListView = () => {
     year: true, pageCount: true, readedDate: true, addedDate: true,
     version: true, categories: true, description: true
   };
-  
+
   const getStoredColumns = () => JSON.parse(localStorage.getItem('visibleColumns')) || defaultVisibleColumns;
   const [visibleColumns, setVisibleColumns] = useState(getStoredColumns);
   const [activeColumns, setActiveColumns] = useState(getStoredColumns);
+
+  // Sıralama durumu
+  const [sortField, setSortField] = useState('title');
+  const [sortDirection, setSortDirection] = useState('asc');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -43,9 +47,20 @@ const BookListView = () => {
   const handleSearch = (event) => setSearchTerm(event.target.value);
   const handleCategoryChange = (event) => setSearchCategory(event.target.value);
 
+  // Filtreleme
   const filteredBooks = books.filter((book) => {
     const term = searchTerm.toLowerCase();
     return book[searchCategory]?.toLowerCase().includes(term);
+  });
+
+  // Sıralama
+  const sortedBooks = [...filteredBooks].sort((a, b) => {
+    const fieldA = a[sortField];
+    const fieldB = b[sortField];
+
+    if (fieldA < fieldB) return sortDirection === 'asc' ? -1 : 1;
+    if (fieldA > fieldB) return sortDirection === 'asc' ? 1 : -1;
+    return 0;
   });
 
   const columns = [
@@ -53,6 +68,17 @@ const BookListView = () => {
     'pageCount', 'readedDate', 'addedDate', 'version', 
     'categories', 'description'
   ];
+
+  // Tıklama işlevi
+  const handleHeaderClick = (column) => {
+    if (sortField === column) {
+      // Sıralama yönünü değiştir
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(column);
+      setSortDirection('asc'); 
+    }
+  };
 
   return (
     <Layout>
@@ -68,11 +94,12 @@ const BookListView = () => {
             <option value="title">Title</option>
             <option value="publisher">Publisher</option>
             <option value="author">Author</option>
+            <option value="description">Description</option>
           </select>
         </div>
 
         <div>
-          <h3>{filteredBooks.length} results</h3>
+          <h3>{sortedBooks.length} results</h3>
         </div>
 
         <div className="filter-buttons">
@@ -93,11 +120,20 @@ const BookListView = () => {
         <div className="book-table">
           <div className="book-table-header" style={{ fontWeight: 'bold' }}>
             {columns.map(column => (
-              visibleColumns[column] && <div key={column} className="book-table-column">{column.charAt(0).toUpperCase() + column.slice(1)}</div>
+              visibleColumns[column] && (
+                <div 
+                  key={column} 
+                  className="book-table-column" 
+                  onClick={() => handleHeaderClick(column)} // Tıklama işlevi ekleyin
+                  style={{ cursor: 'pointer' }} // İmleçin tıklanabilir olduğunu göstermek için
+                >
+                  {column.charAt(0).toUpperCase() + column.slice(1)}
+                </div>
+              )
             ))}
           </div>
 
-          {filteredBooks.map((book) => (
+          {sortedBooks.map((book) => (
             <div key={book.id} className="book-table-row" onClick={() => handleBookClick(book)}>
               {visibleColumns.title && <div className="book-table-column">{book.title}</div>}
               {visibleColumns.author && <div className="book-table-column">{book.author}</div>}
