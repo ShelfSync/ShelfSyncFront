@@ -1,7 +1,7 @@
 {
   "name": "shelfsync",
   "version": "0.1.0",
-  "homepage": "https://gitname.github.io/react-gh-pages",
+  "homepage": "http://localhost:3000/",
   "private": true,
   "dependencies": {
     "@mui/icons-material": "^5.16.7",
