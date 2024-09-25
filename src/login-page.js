@@ -27,7 +27,6 @@ const LoginPage = () => {
 
         
 
-        // Tüm doğrulama geçtiyse hata mesajını temizle
         setErrorMessage('');
         alert('Form submitted successfully!');
         

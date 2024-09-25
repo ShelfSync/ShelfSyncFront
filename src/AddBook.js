@@ -1,31 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './AddBook.css';
+import Layout from './Layout';
+
 
 const AddBook = () => {
   const [bookData, setBookData] = useState({
     title: '',
     readDate: '',
-    addedDate: '',
     cover: '',
     description: '',
     author: '',
     altAuthor: '',
     publisher: '',
+    isbn: '',
     version: '',
     year: '',
     page: '',
-    categories: ''
+    categories: '',
+    readingStatus: '0' //default value is not readed
   });
+  
   const [books, setBooks] = useState([]);
   const [titleSuggestions, setTitleSuggestions] = useState([]);
   const [authorSuggestions, setAuthorSuggestions] = useState([]);
   const [altAuthorSuggestions, setAltAuthorSuggestions] = useState([]);
   const [publisherSuggestions, setPublisherSuggestions] = useState([]);
-
   useEffect(() => {
-    // Kitapları JSON dosyasından çekme
-    axios.get('/Books.json')  // JSON dosyanızın yolu
+    axios.get('/Books.json')  
       .then(response => {
         setBooks(response.data);
       })
@@ -41,7 +43,6 @@ const AddBook = () => {
       [name]: value
     }));
 
-    // Öneri sistemini güncelle
     if (name === 'title') {
       const filteredTitleSuggestions = books.filter(book =>
         book.title.toLowerCase().includes(value.toLowerCase())
@@ -95,37 +96,36 @@ const AddBook = () => {
     }
   };
 
+  
+  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verileri txt dosyasına kaydetme
     const bookText = `
       Title: ${bookData.title}
       Read Date: ${bookData.readDate}
-      Added Date: ${bookData.addedDate}
       Cover: ${bookData.cover}
       Description: ${bookData.description}
       Author: ${bookData.author}
       Alt Author: ${bookData.altAuthor}
+      Isbn: ${bookData.isbn}
       Publisher: ${bookData.publisher}
       Version: ${bookData.version}
       Year: ${bookData.year}
       Page: ${bookData.page}
       Categories: ${bookData.categories.split(',').join(', ')}
+      Reading Status: ${bookData.readingStatus === '0' ? 'Okunmadı' : bookData.readingStatus === '1' ? 'Okuyor' : 'Okundu'}
     `;
 
-    // Dosya kaydetme işlemi (simülasyon)
-    const blob = new Blob([bookText], { type: 'text/plain' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'bookData.txt';
-    link.click();
 
-    // Formu sıfırla
+    
+    
+
+    // Reset form after submit
     setBookData({
       title: '',
       readDate: '',
-      addedDate: '',
       cover: '',
       description: '',
       author: '',
@@ -166,6 +166,7 @@ const AddBook = () => {
   };
 
   return (
+    <Layout>
     <div className="add-book-container">
       <h2>Add New Book</h2>
       <form className="add-book-form" onSubmit={handleSubmit}>
@@ -200,21 +201,8 @@ const AddBook = () => {
           value={bookData.readDate}
           onChange={handleChange}
         />
-        <label>Added Date</label>
-        <input
-          type="date"
-          name="addedDate"
-          placeholder="Added Date"
-          value={bookData.addedDate}
-          onChange={handleChange}
-        />
-        <label>Description</label>
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={bookData.description}
-          onChange={handleChange}
-        />
+        
+        
         <label>Author</label>
         <input
           type="text"
@@ -258,6 +246,17 @@ const AddBook = () => {
             ))}
           </ul>
         )}
+
+<label>Isbn</label>
+        <input
+          type="text"
+          name="isbn"
+          placeholder="Isbn"
+          value={bookData.isbn}
+          onChange={handleChange}
+        />
+        
+
         <label>Publisher</label>
         <input
           type="text"
@@ -282,7 +281,7 @@ const AddBook = () => {
         )}
         <label>Version</label>
         <input
-          type="text"
+          type="number"
           name="version"
           placeholder="Version"
           value={bookData.version}
@@ -290,27 +289,46 @@ const AddBook = () => {
         />
         <label>Year</label>
         <input
-          type="text"
+          type="number"
           name="year"
           placeholder="Year"
           value={bookData.year}
           onChange={handleChange}
         />
-        <label>Page</label>
+        <label>Page Count</label>
         <input
-          type="text"
+          type="number"
           name="page"
-          placeholder="Page"
+          placeholder="Page Count"
           value={bookData.page}
           onChange={handleChange}
         />
-        <label>Categories</label>
+        <label>Reading Status</label>
+        <select
+          name="readingStatus"
+          value={bookData.readingStatus}
+          onChange={handleChange}
+        >
+          <option value="0">To Read</option>
+          <option value="1">Reading</option>
+          <option value="2">Read</option>
+        </select>
+
+        <label>Genres</label>
         <input
           type="text"
           name="categories"
-          placeholder="Categories (comma separated)"
+          placeholder="Genres (comma separated)"
           value={bookData.categories}
           onChange={handleChange}
+        />
+
+        <label>Description</label>
+          <textarea
+            name="description"
+            placeholder="Description"
+            value={bookData.description}
+            onChange={handleChange}
         />
 
         <div className="cover-selection">
@@ -341,6 +359,7 @@ const AddBook = () => {
         <button type="submit">Save Book</button>
       </form>
     </div>
+    </Layout>
   );
 };
 

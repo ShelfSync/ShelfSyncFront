@@ -18,20 +18,21 @@ const RegisterPage = () => {
         event.preventDefault();
 
         if (!username || !password) {
-            // setErrorMessage('Please fill out all fields.');
-            // return;
+            setErrorMessage('Please fill out all fields.');
+            return;
         }
         
-        axios.post('https://login-endpoint-url', { username, password }, {
+        axios.post('http://localhost:5193/api/Auth/login', { username, password }, {
             headers: headers,
         })
-        .then(response => {
+        .then(response => {            
+            const token = response.data.token; 
+            localStorage.setItem('token', token); 
             alert('Login successful!');
             navigate('/main'); 
         })
         .catch(error => {
-            // setErrorMessage('Login failed. Please try again.');
-            navigate('/main'); 
+            setErrorMessage('Login failed. Please try again.');
         });
     };
 
@@ -48,10 +49,11 @@ const RegisterPage = () => {
             return;
         }
 
-        axios.post('https://register-endpoint-url', { username, password }, {
+        axios.post('http://localhost:5193/api/Auth/register', { username, password }, {
             headers: headers,
         })
         .then(response => {
+            console.log(response);
             alert('Registration successful!');
             navigate('/main'); 
         })

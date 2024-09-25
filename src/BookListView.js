@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import BookDetails from './BookDetails';
-// import './BookStyles.css';
+import Layout from './Layout';
 
 const BookListView = ({ books }) => {
   const [selectedBook, setSelectedBook] = useState(null);
@@ -61,6 +61,7 @@ const BookListView = ({ books }) => {
   });
 
   return (
+    <Layout>
     <div className="book-table-container">
       <div className="search-bar">
         <input
@@ -131,6 +132,7 @@ const BookListView = ({ books }) => {
       </div>
       {selectedBook && <BookDetails book={selectedBook} closeDetails={closeDetails} />}
     </div>
+    </Layout>
   );
 };
 

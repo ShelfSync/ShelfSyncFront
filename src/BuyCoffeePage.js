@@ -1,8 +1,10 @@
 import React from 'react';
 import './BuyCoffee.css'; // Stilleri ayrı bir dosyaya almak isterseniz
+import Layout from './Layout';
 
 const BuyCoffee = () => {
   return (
+    <Layout>
     <div className="buy-coffee-container">
       <div className="coffee-icon">
         {/* Kahve ikonu için basit bir emoji veya bir SVG kullanılabilir */}
@@ -18,6 +20,7 @@ const BuyCoffee = () => {
         </a>
       </button>
     </div>
+    </Layout>
   );
 };
 

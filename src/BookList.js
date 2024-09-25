@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import BookDetails from './BookDetails';
 import './BookStyles.css';
+import Layout from './Layout';
+
 
 const BookList = ({books}) => {
   
@@ -16,6 +18,7 @@ const BookList = ({books}) => {
   };
 
   return (
+    <Layout>
     <div className="book-list">
       {books.map((book) => (
         <div key={book.id} className="book" onClick={() => handleBookClick(book)}>
@@ -25,6 +28,7 @@ const BookList = ({books}) => {
       ))}
       {selectedBook && <BookDetails book={selectedBook} closeDetails={closeDetails} />}
     </div>
+    </Layout>
   );
 };
 

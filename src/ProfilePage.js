@@ -36,7 +36,7 @@ const ProfilePage = () => {
         }
     };
 
-    const handlePasswordChange = (event) => {
+    const handlePasswordChange = async  (event) => {
         event.preventDefault();
         if (!currentPassword || !newPassword) {
             setPasswordError('Please fill out all fields.');
@@ -46,10 +46,23 @@ const ProfilePage = () => {
             setPasswordError('New password must be at least 6 characters long.');
             return;
         }
-        alert('Password changed successfully!');
-        setCurrentPassword('');
-        setNewPassword('');
-        setPasswordError('');
+        try {
+            const username = "nidos";
+            const response = await axios.post('http://localhost:5193/api/Auth/changePassword', {
+                currentPassword,
+                newPassword,
+                username
+            });
+            if (response.status === 200) {
+                alert('Password changed successfully!');
+                setCurrentPassword('');
+                setNewPassword('');
+                setPasswordError('');
+            }
+        } catch (error) {
+            console.error('Error changing password:', error);
+            setPasswordError('Failed to change password. Please try again.');
+        }
     };
 
     const handlePrivacyChange = (event) => {
