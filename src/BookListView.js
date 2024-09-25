@@ -71,13 +71,17 @@ const BookListView = () => {
           </select>
         </div>
 
+        <div>
+          <h3>{filteredBooks.length} results</h3>
+        </div>
+
         <div className="filter-buttons">
           {columns.map(column => (
             <button
               key={column}
               onClick={() => toggleColumn(column)}
               style={{
-                backgroundColor: activeColumns[column] ? 'lightGreen' : 'initial',
+                backgroundColor: activeColumns[column] ? 'grey' : 'initial',
                 color: activeColumns[column] ? 'white' : 'black'
               }}
             >
@@ -107,7 +111,7 @@ const BookListView = () => {
               {visibleColumns.categories && (
                 <div className="book-table-column categories-column">
                   {book.genres.map((genre) => (
-                    <div key={genre.id} className="category">{genre.name}</div>
+                    <div key={genre.id} className="category-item">{genre.name}</div>
                   ))}
                 </div>
               )}

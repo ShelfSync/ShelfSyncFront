@@ -8,6 +8,7 @@ const BookDetails = ({ book, closeDetails }) => {
   const [publisher, setPublisher] = useState(book.publisher);
   const [version, setVersion] = useState(book.version);
   const [year, setYear] = useState(book.year);
+  const [genres, setGenres] = useState(book.genres);
   const [isbn, setIsbn] = useState(book.isbn);
 
   const [readedDate, setreadedDate] = useState(book.readedDate);
@@ -15,6 +16,15 @@ const BookDetails = ({ book, closeDetails }) => {
   const [pageCount, setPageCount] = useState(book.page);
   const [description, setDescription] = useState(book.description);
   const [isEditing, setIsEditing] = useState(false);
+
+  const handleGenreChange = (index, newGenre) => {
+    const updatedGenres = genres.map((genre, i) =>
+      i === index ? { ...genre, name: newGenre } : genre
+    );
+    setGenres(updatedGenres);
+  };
+
+  
 
   const handleSave = async () => {
     try {
@@ -46,11 +56,22 @@ const BookDetails = ({ book, closeDetails }) => {
             <div className="book-onTitle">{book.title}</div>
           </div>
           <div className="categories-container">
-            {book.genres.map((genre) => (
-              <div key={genre.id} className="category-item">
-                {genre.name}
-              </div>
-            ))}
+          {isEditing ? (
+              genres.map((genre, index) => (
+                <input
+                  key={genre.id}
+                  type="text"
+                  value={genre.name}
+                  onChange={(e) => handleGenreChange(index, e.target.value)}
+                />
+              ))
+            ) : (
+              genres.map((genre) => (
+                <div key={genre.id} className="category-item">
+                  {genre.name}
+                </div>
+              ))
+            )}
           </div>
         </div>
         <div className="book-info">

@@ -209,10 +209,14 @@ body {
   }
   
   .category-item {
+    background-color: #483C83;
+    margin: 6px!important;
+    padding: 5px!important;
+    width: fit-content; 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
+}
   
   
   
