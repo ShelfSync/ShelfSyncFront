@@ -30,16 +30,7 @@ const ProfilePage = () => {
         });
     }, []);
 
-    useEffect(() => {
-        axios.get('./User.json')
-            .then(response => {
-                setUsers(response.data);
-                setIsPrivate(response.data.isPrivate || false); // Set initial value for isPrivate
-            })
-            .catch(error => {
-                console.error("There was an error fetching the user data!", error);
-            });
-    }, []);
+   
 
     function parseJWT(token) {
         const base64Url = token.split('.')[1];
@@ -107,7 +98,7 @@ const ProfilePage = () => {
     };
 
     const goToHomePage = () => {
-        navigate('/main'); 
+        navigate('/library'); 
     };
 
     return (
